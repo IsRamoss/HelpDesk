@@ -14,6 +14,7 @@ class ChamadoRepository():
 
     @staticmethod
     def cadastrar_chamado(dados):
+
         chamado = Chamado(
             titulo=dados["titulo"],
             descricao=dados["descricao"],
@@ -96,3 +97,11 @@ class ChamadoRepository():
             "em_atendimento": em_atendimento,
             "encerrados": encerrados
         }
+
+    @staticmethod
+    def contar_chamados_altos_ativos(usuario_id):
+        return Chamado.query.filter(
+            Chamado.usuario_id == usuario_id,
+            Chamado.prioridade == "Alta",
+            Chamado.status != "Encerrado"
+        ).count()

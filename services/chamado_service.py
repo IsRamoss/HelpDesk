@@ -23,8 +23,17 @@ class ChamadoServices():
 
     @staticmethod
     def cadastra_chamado(**kwargs):
-        chamado = ChamadoRepository.cadastrar_chamado(kwargs)
-        return chamado
+        kwargs['status'] = "Aberto"
+
+        prioridade = kwargs.get('prioridade')
+        usuario_id = kwargs.get('usuario_id')
+
+        if prioridade == "Alta":
+            qtd_altos_ativos = ChamadoRepository.contar_chamados_altos_ativos(usuario_id)
+            if qtd_altos_ativos >= 5:
+                raise ValueError("O usuário não pode possuir mais de 5 chamados com prioridade Alta que não estejam encerrados.")
+
+        return ChamadoRepository.cadastrar_chamado(**kwargs)
 
     @staticmethod
     def consultar_email(email):

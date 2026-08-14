@@ -46,20 +46,24 @@ class ChamadoController():
         erro = ChamadoController.valida_dados(dados)
         if erro:
             return erro
+        try:
+            chamado = ChamadoServices.cadastra_chamado(
+            titulo=dados["titulo"],
+            descricao=dados["descricao"],
+            prioridade=dados["prioridade"],
+            tecnico=dados.get("tecnico"),
+            usuario_id=dados["usuario_id"],
+            )
 
-        chamado = ChamadoServices.cadastra_chamado(
-        titulo=dados["titulo"],
-        descricao=dados["descricao"],
-        prioridade=dados["prioridade"],
-        status=dados["status"],
-        tecnico=dados.get("tecnico"),
-        usuario_id=dados["usuario_id"],
-        )
-
-        return jsonify({
-            "mensagem": "Chamado cadastrado",
-            "id": chamado.id
-        })
+            return jsonify({
+                "mensagem": "Chamado cadastrado",
+                "id": chamado.id
+            })
+        except ValueError as e:
+            return jsonify({"erro": str(e)}), 400
+        except Exception as e:
+            return jsonify({"erro": "Erro ao cadastrar chamado"}), 500
+        
 
     @staticmethod
     def atualizar(id):
